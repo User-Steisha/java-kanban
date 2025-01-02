@@ -2,10 +2,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TaskManager {
-    private Map<Integer, Task> tasks; // Хранение основных задач
-    private Map<Integer, Epic> epics; // Хранение эпиков
-    private Map<Integer, SubTask> subTasks; // Хранение подзадач
-    private int nextTaskId = 1; // Для генерации ID задач
+    private Map<Integer, Task> tasks;
+    private Map<Integer, Epic> epics;
+    private Map<Integer, SubTask> subTasks;
+    private int nextTaskId = 1;
 
     public TaskManager() {
         tasks = new HashMap<>();
@@ -22,7 +22,7 @@ public class TaskManager {
     public void createEpic(String name, String description) {
         Epic epic = new Epic(nextTaskId++, name, description);
         epics.put(epic.getId(), epic);
-        System.out.println("Создан эпик: " + epic);
+        System.out.println("Создана многоуровневая задача: " + epic);
     }
 
     public void createSubTask(String name, String description, int parentEpicId) {
@@ -35,7 +35,7 @@ public class TaskManager {
         subTasks.put(subTask.getId(), subTask);
 
         Epic parentEpic = epics.get(parentEpicId);
-        parentEpic.addSubTask(subTask); // Добавление подзадачи к эпикам
+        parentEpic.addSubTask(subTask);
         System.out.println("Создана подзадача: " + subTask + " для эпика: " + parentEpic.getName());
     }
 
@@ -45,7 +45,7 @@ public class TaskManager {
             System.out.println(task);
         }
 
-        System.out.println("Эпики:");
+        System.out.println("Многоуровневая задача:");
         for (Epic epic : epics.values()) {
             System.out.println(epic);
             for (SubTask subTask : epic.getSubTasks()) {
