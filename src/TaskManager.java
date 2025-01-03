@@ -27,7 +27,7 @@ public class TaskManager {
 
     public void createSubTask(String name, String description, int parentEpicId) {
         if (!epics.containsKey(parentEpicId)) {
-            System.out.println("Эпик с ID " + parentEpicId + " не найден.");
+            System.out.println("Задача с ID " + parentEpicId + " не найден.");
             return;
         }
 

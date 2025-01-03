@@ -7,12 +7,12 @@ public class Main {
         TaskManager taskManager = new TaskManager();
 
         while (true) {
-            System.out.println("1. Создать задачу");
-            System.out.println("2. Создать многоуровневую задачу");
-            System.out.println("3. Создать подзадачу");
-            System.out.println("4. Показать все задачи");
-            System.out.println("0. Выход");
             System.out.print("Выберите действие: ");
+            System.out.println("1 - Создать задачу");
+            System.out.println("2 - Создать многоуровневую задачу");
+            System.out.println("3 - Создать подзадачу");
+            System.out.println("4 - Показать все задачи");
+            System.out.println("0 - Выход");
             int choice = Integer.parseInt(scanner.nextLine());
 
             switch (choice) {
@@ -39,7 +39,7 @@ public class Main {
 
 
                     String subTaskDescription = scanner.nextLine();
-                    System.out.print("Введите ID эпика: ");
+                    System.out.print("Введите ID: ");
                     int parentId = Integer.parseInt(scanner.nextLine());
                     taskManager.createSubTask(subTaskName, subTaskDescription, parentId);
                     break;

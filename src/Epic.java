@@ -24,21 +24,21 @@ public class Epic extends Task {
             return;
         }
 
-        boolean allDone = true;
-        boolean anyInProgress = false;
+        boolean done = true;
+        boolean inProgress = false;
 
         for (SubTask subTask : subTasks) {
             if (subTask.getStatus() != Status.DONE) {
-                allDone = false;
+                done = false;
             }
             if (subTask.getStatus() == Status.IN_PROGRESS) {
-                anyInProgress = true;
+                inProgress = true;
             }
         }
 
-        if (allDone) {
+        if (done) {
             setStatus(Status.DONE);
-        } else if (anyInProgress) {
+        } else if (inProgress) {
             setStatus(Status.IN_PROGRESS);
         } else {
             setStatus(Status.NEW);
