@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    private List<SubTask> subTasks;
+    private final List<SubTask> subTasks;
 
     public Epic(int id, String name, String description) {
         super(id, name, description, Status.NEW);
@@ -13,6 +13,11 @@ public class Epic extends Task {
         subTasks.add(subTask);
         updateStatus();
     }
+    public void removeSubTask(int subTaskId) {
+        subTasks.removeIf(subTask -> subTask.getId() == subTaskId);
+        updateStatus();
+    }
+
 
     public List<SubTask> getSubTasks() {
         return subTasks;
@@ -48,8 +53,6 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic{" +
-
-
                 "id=" + getId() +
                 ", name='" + getName() +
         ", description='" + getDescription() +

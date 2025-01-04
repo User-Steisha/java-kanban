@@ -1,52 +1,54 @@
 import java.util.Objects;
 
-public class SubTask {
-    private final int id;
-    private String name;
-    private String description;
-    private Status status;
+public class SubTask extends Task {
     private int parentEpicId;
 
-    public SubTask(int id, String name, String description, Status status, int parentEpicId) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
+    public SubTask(int id, String name, String description, int parentEpicId, Status status) {
+        super(id, name, description, status);
         this.parentEpicId = parentEpicId;
     }
 
+    public int getParentEpicId() {
+        return parentEpicId;
+    }
+
+    @Override
     public int getId() {
-        return id;
+        return super.getId();
     }
 
+    @Override
     public String getName() {
-        return name;
+        return super.getName();
     }
 
+    @Override
     public Status getStatus() {
-        return status;
+        return super.getStatus();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SubTask)) return false;
+        if (!super.equals(o)) return false;
         SubTask subTask = (SubTask) o;
-        return id == subTask.id;
+        return parentEpicId == subTask.parentEpicId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(super.hashCode(), parentEpicId);
     }
 
     @Override
     public String toString() {
         return "SubTask{" +
-                "id=" + id +
-                ", name='" + name +
-        ", description='" + description +
-        ", status=" + status +
+                "id=" + getId() +
+                ", name='" + getName() +
+        ", description='" + getDescription() +
+        ", status=" + getStatus() +
+                ", parentEpicId=" + parentEpicId +
                 '}';
     }
 }
