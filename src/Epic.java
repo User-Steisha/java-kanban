@@ -23,6 +23,10 @@ public class Epic extends Task {
         return subTasks;
     }
 
+    public void setStatus(Status status) {
+        super.setStatus(status);
+    }
+
     private void updateStatus() {
         if (subTasks.isEmpty()) {
             setStatus(Status.NEW);

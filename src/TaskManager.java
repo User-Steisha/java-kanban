@@ -1,11 +1,13 @@
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class TaskManager {
     private final Map<Integer, Task> tasks;
     private final Map<Integer, Epic> epics;
     private final Map<Integer, SubTask> subTasks;
-    private int nextTaskId = 1;
+    int nextTaskId = 1;
 
     public TaskManager() {
         tasks = new HashMap<>();
@@ -13,30 +15,31 @@ public class TaskManager {
         subTasks = new HashMap<>();
     }
 
-    public void createTask(String name, String description) {
-        Task task = new Task(nextTaskId++, name, description, Status.NEW);
-        tasks.put(task.getId(), task);
-        System.out.println("Создана задача: " + task);
+    public void createTask(Task task) {
+        if (task != null) {
+            tasks.put(task.getId(), task);
+            System.out.println("Создана задача: " + task);
+        } else {
+            System.out.println("Ошибка: задача не может быть пустой");
+        }
     }
 
-    public void createEpic(String name, String description) {
-        Epic epic = new Epic(nextTaskId++, name, description);
+    public void createEpic(Epic epic) {
         epics.put(epic.getId(), epic);
         System.out.println("Создана многоуровневая задача: " + epic);
     }
 
-    public void createSubTask(String name, String description, int parentEpicId) {
+    public void createSubTask(SubTask subTask) {
+        int parentEpicId = subTask.getParentEpicId();
+
         if (!epics.containsKey(parentEpicId)) {
-            System.out.println("Эпик с ID " + parentEpicId + " не найден.");
+            System.out.println("Многоуровневая задача с ID " + parentEpicId + " не найдена.");
             return;
         }
-
-        SubTask subTask = new SubTask(nextTaskId++, name, description, parentEpicId, Status.NEW);
         subTasks.put(subTask.getId(), subTask);
-
         Epic parentEpic = epics.get(parentEpicId);
         parentEpic.addSubTask(subTask);
-        System.out.println("Создана подзадача: " + subTask + " для эпика: " + parentEpic.getName());
+        System.out.println("Создана подзадача: " + subTask + " для многоуровневой задачи: " + parentEpic.getName());
     }
 
     public Task findTaskById(int taskId) {
@@ -68,16 +71,22 @@ public class TaskManager {
         }
     }
 
-
-
     public void deleteTask(int taskId) {
         tasks.remove(taskId);
         System.out.println("Задача с ID " + taskId + " удалена.");
     }
 
     public void deleteEpic(int epicId) {
-        epics.remove(epicId);
-        System.out.println("Эпик с ID " + epicId + " удален.");
+        Epic epicToDelete = epics.remove(epicId);
+        if (epicToDelete != null) {
+            for (SubTask subTask : epicToDelete.getSubTasks()) {
+                subTasks.remove(subTask.getId());
+            }
+            epicToDelete.setStatus(Status.DONE);
+            System.out.println("Эпик с ID " + epicId + " и все связанные подзадачи удалены.");
+        } else {
+            System.out.println("Эпик с ID " + epicId + " не найден.");
+        }
     }
 
     public void deleteSubTask(int subTaskId) {
@@ -86,6 +95,12 @@ public class TaskManager {
             Epic parentEpic = epics.get(subTask.getParentEpicId());
             if (parentEpic != null) {
                 parentEpic.removeSubTask(subTaskId);
+                if (!parentEpic.getSubTasks().isEmpty()) {
+                    parentEpic.setStatus(Status.IN_PROGRESS);
+                } else {
+                    parentEpic.setStatus(Status.DONE);
+                }
+                System.out.println("Статус эпической задачи с ID " + parentEpic.getId() + " обновлен.");
             }
             System.out.println("Подзадача с ID " + subTaskId + " удалена.");
         } else {
@@ -94,21 +109,14 @@ public class TaskManager {
     }
 
 
-    public void displayTasks() {
-        System.out.println("Задачи:");
-        for (Task task : tasks.values()) {
-            System.out.println(task);
-        }
-        System.out.println("Многоуровневая задача:");
-        for (Epic epic : epics.values()) {
-            System.out.println(epic);
-            for (SubTask subTask : epic.getSubTasks()) {
-                System.out.println("  - " + subTask);
-            }
-        }
-        System.out.println("Подзадачи:");
-        for (SubTask subTask : subTasks.values()) {
-            System.out.println(subTask);
-        }
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
     }
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
+    public List<SubTask> getAllSubTasks() {
+        return new ArrayList<>(subTasks.values());
+    }
+
 }

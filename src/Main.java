@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -27,7 +28,9 @@ public class Main {
                     String taskName = scanner.nextLine();
                     System.out.print("Введите описание задачи: ");
                     String taskDescription = scanner.nextLine();
-                    taskManager.createTask(taskName, taskDescription);
+
+                    Task newTask = new Task(taskManager.nextTaskId++, taskName, taskDescription, Status.NEW);
+                    taskManager.createTask(newTask);
                     break;
 
                 case 2:
@@ -35,19 +38,23 @@ public class Main {
                     String epicName = scanner.nextLine();
                     System.out.print("Введите описание многоуровневой задачи: ");
                     String epicDescription = scanner.nextLine();
-                    taskManager.createEpic(epicName, epicDescription);
+
+                    Epic newEpic = new Epic(taskManager.nextTaskId++, epicName, epicDescription);
+                    taskManager.createEpic(newEpic);
                     break;
 
                 case 3:
+                    System.out.print("Введите ID эпика: ");
+                    int parentId = Integer.parseInt(scanner.nextLine());
                     System.out.print("Введите название подзадачи: ");
                     String subTaskName = scanner.nextLine();
                     System.out.print("Введите описание подзадачи: ");
                     String subTaskDescription = scanner.nextLine();
-                    System.out.print("Введите ID эпика: ");
-                    int parentId = Integer.parseInt(scanner.nextLine());
 
-                    taskManager.createSubTask(subTaskName, subTaskDescription, parentId);
+                    SubTask newSubTask = new SubTask(taskManager.nextTaskId++, subTaskName, subTaskDescription, parentId, Status.NEW);
+                    taskManager.createSubTask(newSubTask);
                     break;
+
 
                 case 4:
                     System.out.print("Введите ID задачи для удаления: ");
@@ -69,7 +76,7 @@ public class Main {
 
 
                 case 7:
-                    taskManager.displayTasks();
+                    displayTasks(taskManager);
                     break;
 
                 case 8:
@@ -108,5 +115,29 @@ public class Main {
                     System.out.println("Неверный выбор. Попробуйте снова.");
             }
         }
+    }
+    private static void displayTasks (TaskManager taskManager){
+        System.out.println("Задачи:");
+        List<Task> tasks = taskManager.getAllTasks();
+        for (Task task : tasks) {
+            System.out.println(task);
+        }
+
+        System.out.println("Многоуровневые задачи:");
+        List<Epic> epics = taskManager.getAllEpics();
+        for (Epic epic : epics) {
+            System.out.println(epic);
+            List<SubTask> subTasks = epic.getSubTasks();
+            for (SubTask subTask : subTasks) {
+                System.out.println("  - " + subTask);
+            }
+        }
+
+        System.out.println("Подзадачи:");
+        List<SubTask> subTasks = taskManager.getAllSubTasks();
+        for (SubTask subTask : subTasks) {
+            System.out.println(subTask);
+        }
+
     }
 }
